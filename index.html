@@ -1,0 +1,362 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>三区域文本展示</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            padding: 20px;
+            background-color: #f0f0f0;
+        }
+
+        .container {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .section {
+            background-color: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+            border-bottom: 2px solid #eee;
+            padding-bottom: 10px;
+        }
+
+        .section h2 {
+            color: #333;
+        }
+
+        .section p {
+            margin-bottom: 10px;
+            color: #666;
+        }
+
+        .edit-btn {
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        .edit-btn:hover {
+            background-color: #45a049;
+        }
+
+        .edit-area {
+            display: none;
+            margin-top: 10px;
+        }
+
+        .edit-area textarea {
+            width: 100%;
+            min-height: 150px;
+            padding: 10px;
+            margin-bottom: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-family: inherit;
+            line-height: 1.6;
+        }
+
+        .btn-group {
+            display: flex;
+            gap: 10px;
+        }
+
+        .save-btn, .cancel-btn {
+            padding: 8px 16px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        .save-btn {
+            background-color: #4CAF50;
+            color: white;
+        }
+
+        .cancel-btn {
+            background-color: #f44336;
+            color: white;
+        }
+
+        .save-btn:hover {
+            background-color: #45a049;
+        }
+
+        .cancel-btn:hover {
+            background-color: #da190b;
+        }
+
+        .content-area {
+            margin-top: 10px;
+        }
+
+        .content-line {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 10px;
+        }
+
+        .copy-btn {
+            background-color: #2196F3;
+            color: white;
+            border: none;
+            padding: 4px 8px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 12px;
+            transition: background-color 0.3s;
+        }
+
+        .copy-btn:hover {
+            background-color: #1976D2;
+        }
+
+        .copy-tooltip {
+            position: fixed;
+            background-color: #333;
+            color: white;
+            padding: 5px 10px;
+            border-radius: 4px;
+            font-size: 12px;
+            pointer-events: none;
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+    </style>
+</head>
+<body>
+    <div id="copyTooltip" class="copy-tooltip">已复制</div>
+
+    <div class="container">
+        <div class="section">
+            <div class="section-header">
+                <h2>第一区域</h2>
+                <button class="edit-btn" onclick="editSection(1)">修改</button>
+            </div>
+            <div class="content-area" id="content-1">
+                <p>这是第一个区域的内容。</p>
+                <p>可以包含多行文本。</p>
+                <p>每个段落都会自动换行。</p>
+                <p>这里可以放置重要的信息。</p>
+                <p>比如公司简介或者产品介绍。</p>
+            </div>
+            <div class="edit-area" id="edit-1">
+                <textarea id="textarea-1"></textarea>
+                <div class="btn-group">
+                    <button class="save-btn" onclick="saveSection(1)">保存</button>
+                    <button class="cancel-btn" onclick="cancelEdit(1)">取消</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="section">
+            <div class="section-header">
+                <h2>第二区域</h2>
+                <button class="edit-btn" onclick="editSection(2)">修改</button>
+            </div>
+            <div class="content-area" id="content-2">
+                <p>这是第二个区域的内容。</p>
+                <p>同样支持多行文本显示。</p>
+                <p>可以放置不同类型的信息。</p>
+                <p>例如服务内容或者新闻动态。</p>
+                <p>内容会自动适应区域大小。</p>
+            </div>
+            <div class="edit-area" id="edit-2">
+                <textarea id="textarea-2"></textarea>
+                <div class="btn-group">
+                    <button class="save-btn" onclick="saveSection(2)">保存</button>
+                    <button class="cancel-btn" onclick="cancelEdit(2)">取消</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="section">
+            <div class="section-header">
+                <h2>第三区域</h2>
+                <button class="edit-btn" onclick="editSection(3)">修改</button>
+            </div>
+            <div class="content-area" id="content-3">
+                <p>这是第三个区域的内容。</p>
+                <p>可以放置联系方式。</p>
+                <p>或者其他补充信息。</p>
+                <p>所有区域都有统一的样式。</p>
+                <p>便于阅读和维护。</p>
+            </div>
+            <div class="edit-area" id="edit-3">
+                <textarea id="textarea-3"></textarea>
+                <div class="btn-group">
+                    <button class="save-btn" onclick="saveSection(3)">保存</button>
+                    <button class="cancel-btn" onclick="cancelEdit(3)">取消</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function editSection(sectionNumber) {
+            // 获取当前内容
+            const contentArea = document.getElementById(`content-${sectionNumber}`);
+            const editArea = document.getElementById(`edit-${sectionNumber}`);
+            const textarea = document.getElementById(`textarea-${sectionNumber}`);
+            
+            // 将当前内容填入文本框
+            let content = Array.from(contentArea.getElementsByTagName('p'))
+                              .map(p => p.textContent)
+                              .join('\n');
+            textarea.value = content;
+            
+            // 显示编辑区域，隐藏内容区域
+            contentArea.style.display = 'none';
+            editArea.style.display = 'block';
+        }
+
+        function saveSection(sectionNumber) {
+            const contentArea = document.getElementById(`content-${sectionNumber}`);
+            const editArea = document.getElementById(`edit-${sectionNumber}`);
+            const textarea = document.getElementById(`textarea-${sectionNumber}`);
+            
+            // 清空原有内容
+            contentArea.innerHTML = '';
+            
+            // 将文本框中的内容按行分割并创��新的段落
+            textarea.value.split('\n').forEach(line => {
+                if (line.trim()) {  // 忽略空行
+                    const div = document.createElement('div');
+                    div.className = 'content-line';
+                    
+                    const p = document.createElement('p');
+                    p.textContent = line;
+                    
+                    const button = document.createElement('button');
+                    button.className = 'copy-btn';
+                    button.textContent = '复制';
+                    button.onclick = () => copyText(line);
+                    
+                    div.appendChild(p);
+                    div.appendChild(button);
+                    contentArea.appendChild(div);
+                }
+            });
+            
+            // 保存到本地存储
+            localStorage.setItem(`section${sectionNumber}`, textarea.value);
+            
+            // 显示内容区域，隐藏编辑区域
+            contentArea.style.display = 'block';
+            editArea.style.display = 'none';
+        }
+
+        function cancelEdit(sectionNumber) {
+            const contentArea = document.getElementById(`content-${sectionNumber}`);
+            const editArea = document.getElementById(`edit-${sectionNumber}`);
+            
+            // 显示内容区域，隐藏编辑区域
+            contentArea.style.display = 'block';
+            editArea.style.display = 'none';
+        }
+
+        function copyText(text) {
+            // 复制文本
+            navigator.clipboard.writeText(text).then(() => {
+                // 显示提示
+                showTooltip(event);
+            });
+        }
+
+        function showTooltip(event) {
+            const tooltip = document.getElementById('copyTooltip');
+            tooltip.style.left = (event.pageX + 10) + 'px';
+            tooltip.style.top = (event.pageY + 10) + 'px';
+            tooltip.style.opacity = '1';
+            
+            // 1秒后隐藏提示
+            setTimeout(() => {
+                tooltip.style.opacity = '0';
+            }, 1000);
+        }
+
+        window.onload = function() {
+            for (let i = 1; i <= 3; i++) {
+                const contentArea = document.getElementById(`content-${i}`);
+                const savedContent = localStorage.getItem(`section${i}`);
+                
+                if (savedContent) {
+                    // 如果有保存的内容，使用保存的内容
+                    const paragraphs = savedContent.split('\n').map(line => {
+                        if (line.trim()) {
+                            const div = document.createElement('div');
+                            div.className = 'content-line';
+                            
+                            const p = document.createElement('p');
+                            p.textContent = line;
+                            
+                            const button = document.createElement('button');
+                            button.className = 'copy-btn';
+                            button.textContent = '复制';
+                            button.onclick = () => copyText(line);
+                            
+                            div.appendChild(p);
+                            div.appendChild(button);
+                            return div;
+                        }
+                        return null;
+                    }).filter(div => div !== null);
+                    
+                    contentArea.innerHTML = '';
+                    paragraphs.forEach(paragraph => contentArea.appendChild(paragraph));
+                } else {
+                    // 如果没有保存的内容，处理默认内容
+                    const paragraphs = contentArea.getElementsByTagName('p');
+                    const content = Array.from(paragraphs).map(p => p.textContent);
+                    
+                    contentArea.innerHTML = '';
+                    
+                    content.forEach(line => {
+                        const div = document.createElement('div');
+                        div.className = 'content-line';
+                        
+                        const p = document.createElement('p');
+                        p.textContent = line;
+                        
+                        const button = document.createElement('button');
+                        button.className = 'copy-btn';
+                        button.textContent = '复制';
+                        button.onclick = () => copyText(line);
+                        
+                        div.appendChild(p);
+                        div.appendChild(button);
+                        contentArea.appendChild(div);
+                    });
+                }
+            }
+        };
+    </script>
+</body>
+</html> 
