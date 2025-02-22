@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>直播源名称规范化工具</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        textarea {
+            width: 100%;
+            height: 150px;
+            margin-bottom: 10px;
+            resize: none; /* 禁止调整大小 */
+        }
+        button {
+            padding: 8px 16px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            cursor: pointer;
+            margin-right: 10px;
+        }
+        button:hover {
+            background-color: #45a049;
+        }
+        .result {
+            margin-top: 20px;
+            padding: 10px;
+            border: 1px solid #ccc;
+            background-color: #f9f9f9;
+            height: 150px;
+            overflow-y: auto; /* 添加竖向滚动条 */
+        }
+        .button-group {
+            margin-top: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>直播源名称规范化工具</h1>
+        <p>输入直播源信息，点击“规范化”按钮，将自动转换名称格式。</p>
+        <textarea id="input" placeholder="请输入直播源信息，例如：CCTV1,https://example.com/stream"></textarea>
+        <button onclick="normalizeNames()">规范化</button>
+        <div class="result" id="result"></div>
+        <div class="button-group">
+            <button onclick="copyResult()">复制</button>
+            <button onclick="clearAll()">清空</button>
+        </div>
+    </div>
+
+    <script>
+        function normalizeNames() {
+            const input = document.getElementById('input').value;
+            const lines = input.split('\n');
+            const result = lines.map(line => {
+                const [name, url] = line.split(',');
+                const normalized = normalizeName(name.trim());
+                return `${normalized},${url.trim()}`;
+            }).join('\n');
+
+            document.getElementById('result').innerText = result;
+        }
+
+        function normalizeName(name) {
+            const mappings = {
+                'CCTV1': 'CCTV-1 综合台',
+                'CCTV2': 'CCTV-2 财经台',
+                'CCTV3': 'CCTV-3 综艺台',
+                'CCTV4': 'CCTV-4 中文国际',
+                'CCTV5': 'CCTV-5 体育台',
+                'CCTV5+': 'CCTV-5+ 体育赛事',
+                'CCTV6': 'CCTV-6 电影台',
+                'CCTV7': 'CCTV-7 农业军事',
+                'CCTV8': 'CCTV-8 电视剧台',
+                'CCTV9': 'CCTV-9 纪录台',
+                'CCTV10': 'CCTV-10 科教台',
+                'CCTV11': 'CCTV-11 戏曲台',
+                'CCTV12': 'CCTV-12 社会与法',
+                'CCTV13': 'CCTV-13 新闻台',
+                'CCTV14': 'CCTV-14 少儿台',
+                'CCTV15': 'CCTV-15 音乐台',
+                // 添加更多映射规则
+            };
+
+            return mappings[name] || name;
+        }
+
+        function copyResult() {
+            const resultText = document.getElementById('result').innerText;
+            navigator.clipboard.writeText(resultText).then(() => {
+                alert('内容已复制到剪贴板！');
+            }).catch(err => {
+                console.error('复制失败:', err);
+            });
+        }
+
+        function clearAll() {
+            document.getElementById('input').value = '';
+            document.getElementById('result').innerText = '';
+        }
+    </script>
+</body>
+</html>
